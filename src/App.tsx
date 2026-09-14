@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Check,
   Sparkles,
@@ -23,13 +24,13 @@ import {
   BookOpen,
   Bot,
   Eye,
-  Gamepad2,
   Megaphone,
   Share2,
   Smartphone,
   ShoppingBag,
   CloudLightning,
 } from 'lucide-react';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 // ============================================================
 // PRICING DATA
@@ -267,6 +268,8 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
 // ============================================================
 
 function App() {
+  const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false);
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#070b16]">
       {/* Ambient background orbs — dark blue theme */}
@@ -302,7 +305,7 @@ function App() {
             </p>
           </div>
           <div className="hidden h-4 w-px bg-blue-500/30 sm:block" />
-          <p className="text-sm text-blue-300/80">
+          <p className="text-sm font-medium text-white">
             Pre-launch registrations and purchasing close on 30 September 2026.
           </p>
         </div>
@@ -340,10 +343,13 @@ function App() {
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </a>
           <div className="flex flex-col items-center gap-1">
-            <button className="rounded-2xl border border-blue-500/20 bg-blue-600/10 px-8 py-4 font-semibold text-blue-200 backdrop-blur transition hover:bg-blue-600/20 hover:text-blue-100">
+            <button
+              onClick={() => setIsLearnMoreOpen(true)}
+              className="rounded-2xl border border-blue-500/20 bg-blue-600/10 px-8 py-4 font-semibold text-blue-200 backdrop-blur transition hover:bg-blue-600/20 hover:text-blue-100"
+            >
               Learn More
             </button>
-            <span className="text-xs text-gray-500">Coming soon</span>
+            <span className="text-xs text-gray-500">Pre-launch details</span>
           </div>
         </div>
 
@@ -560,6 +566,9 @@ function App() {
           <p className="text-sm text-gray-600">© 2026 Crown Mega. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Learn More Modal */}
+      <LearnMoreModal isOpen={isLearnMoreOpen} onClose={() => setIsLearnMoreOpen(false)} />
     </div>
   );
 }
