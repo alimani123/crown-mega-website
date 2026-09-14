@@ -30,7 +30,7 @@ import {
   ShoppingBag,
   CloudLightning,
 } from 'lucide-react';
-import LearnMoreModal from '@/components/LearnMoreModal';
+import LearnMoreModal from './LearnMoreModal';
 
 // ============================================================
 // PRICING DATA
