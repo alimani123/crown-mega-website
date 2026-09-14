@@ -1,10 +1,8 @@
+import { useState } from 'react';
 import {
   Check,
   Sparkles,
   Crown,
-  Zap,
-  TrendingUp,
-  BadgeCheck,
   Rocket,
   Clock,
   Brain,
@@ -18,7 +16,21 @@ import {
   AlertCircle,
   X,
   Target,
+  Calendar,
+  Network,
+  Video,
+  MessageCircle,
+  Radio,
+  BookOpen,
+  Bot,
+  Eye,
+  Megaphone,
+  Share2,
+  Smartphone,
+  ShoppingBag,
+  CloudLightning,
 } from 'lucide-react';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 // ============================================================
 // PRICING DATA
@@ -35,7 +47,7 @@ interface PricingPlan {
   badgeText: string;
   borderColor: string;
   glowColor: string;
-  icon: typeof BadgeCheck;
+  icon: typeof Crown;
   features: PlanFeature[];
   isFeatured?: boolean;
 }
@@ -48,14 +60,14 @@ const plans: PricingPlan[] = [
     badgeText: 'Standard',
     borderColor: 'border-blue-500/40',
     glowColor: 'hover:shadow-blue-500/20',
-    icon: BadgeCheck,
+    icon: Check,
     features: [
       { text: 'Easy monetization (300 subscribers & 30K views target)' },
-      { text: 'AI tools integrate' },
-      { text: 'Monthly salaries option integrate (Only for hard working creators)' },
+      { text: 'Full platform integration with AI tools' },
+      { text: 'Monthly salary option (Only for hardworking creators)' },
       { text: 'Payout within 2 hours' },
-      { text: 'Standard blue tick icon integrate' },
-      { text: 'CPM - $2.40 (No region wise restrictions)' },
+      { text: 'Standard blue tick verification badge' },
+      { text: 'CPM - $2.40 (No region-wise restrictions)' },
       { text: 'Full freedom for creators' },
     ],
   },
@@ -69,11 +81,11 @@ const plans: PricingPlan[] = [
     icon: Sparkles,
     features: [
       { text: 'Easy monetization (300 subscribers & 30K views target)' },
-      { text: 'AI premium tools integrate' },
-      { text: 'Monthly salaries option integrate (Only for hard working creators)' },
+      { text: 'Full platform integration with AI premium tools' },
+      { text: 'Monthly salary option (Only for hardworking creators)' },
       { text: 'Payout within 2 hours' },
-      { text: 'Premium purple tick integrate' },
-      { text: 'CPM - $2.40 (No region wise restrictions)' },
+      { text: 'Premium purple tick verification badge' },
+      { text: 'CPM - $2.40 (No region-wise restrictions)' },
       { text: 'Full freedom for creators' },
     ],
   },
@@ -88,12 +100,13 @@ const plans: PricingPlan[] = [
     isFeatured: true,
     features: [
       { text: 'Easy monetization (300 subscribers & 30K views target)' },
-      { text: 'All AI premium tools integrate & advanced technology' },
-      { text: 'Monthly salaries option integrate (Only for hard working creators)' },
+      { text: 'Full platform integration with all AI premium tools & advanced technology' },
+      { text: 'Monthly salary option (Only for hardworking creators)' },
       { text: 'Payout within 2 hours' },
-      { text: 'VIP yellow gold tick integrate' },
-      { text: 'CPM - $2.40 (No region wise restrictions)' },
+      { text: 'VIP yellow gold tick verification badge' },
+      { text: 'CPM - $2.40 (No region-wise restrictions)' },
       { text: 'Full freedom for creators' },
+      { text: 'Dedicated Account Manager' },
     ],
   },
 ];
@@ -115,7 +128,7 @@ const heroFeatures = [
 // ============================================================
 
 const whyChooseFeatures = [
-  { icon: TrendingUp, title: 'Easy monetization' },
+  { icon: Rocket, title: 'Easy monetization' },
   { icon: Clock, title: 'Fast payouts within 2 hours' },
   { icon: Brain, title: 'Full advanced AI premium tools lifetime & advanced technology' },
   { icon: Wallet, title: 'Monthly salaries for hardworking creators' },
@@ -141,6 +154,42 @@ const postLaunchBenefits = [
   '800 subscribers target & 80K views target',
   'Account prices very high',
   '50% salary & 50% salary drop',
+];
+
+// ============================================================
+// CONNECTED PLATFORMS DATA
+// ============================================================
+
+interface ConnectedPlatform {
+  name: string;
+  icon: typeof Crown;
+  isHighlighted?: boolean;
+}
+
+const connectedPlatforms: ConnectedPlatform[] = [
+  { name: 'Swit', icon: Share2 },
+  { name: 'Weverse', icon: Globe },
+  { name: 'PDB Personality', icon: Brain },
+  { name: 'buz', icon: Megaphone },
+  { name: 'Truth Social', icon: MessageCircle },
+  { name: 'StreamKar', icon: Video },
+  { name: 'SK Lite', icon: Smartphone },
+  { name: 'Chamet', icon: Radio },
+  { name: 'VOVA Group', icon: ShoppingBag },
+  { name: 'Connected2', icon: Network },
+  { name: 'WorldFirst', icon: Globe },
+  { name: 'TwitCasting', icon: Radio },
+  { name: 'KIRI Engine', icon: CloudLightning },
+  { name: 'Serializd', icon: BookOpen },
+  { name: 'Genspark AI', icon: Bot },
+  { name: 'Learn AI Courses', icon: BookOpen },
+  { name: 'Brilliant', icon: Award },
+  { name: 'MoonLive', icon: Radio },
+  { name: 'Peegle Live', icon: Eye },
+  { name: 'COS.TV', icon: Video },
+  { name: 'Unseen Chat', icon: MessageCircle },
+  { name: 'Jodel', icon: MessageCircle },
+  { name: 'Crown Mega', icon: Crown, isHighlighted: true },
 ];
 
 // ============================================================
@@ -208,7 +257,7 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
               : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-400 hover:to-blue-500 hover:shadow-lg hover:shadow-blue-500/40'
         }`}
       >
-        Buy Now
+        Pre-Order Buy
       </button>
     </div>
   );
@@ -219,6 +268,8 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
 // ============================================================
 
 function App() {
+  const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false);
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#070b16]">
       {/* Ambient background orbs — dark blue theme */}
@@ -240,18 +291,22 @@ function App() {
           <a href="#pricing" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">Pricing</a>
           <a href="#comparison" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">Benefits</a>
           <a href="#why-choose" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">Why Us</a>
-          <button className="rounded-xl border border-blue-500/30 bg-blue-600/15 px-5 py-2 text-sm font-semibold text-blue-300 backdrop-blur transition hover:bg-blue-600/25 hover:text-blue-200">
-            Sign In
-          </button>
+          <a href="#platforms" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">Network</a>
         </div>
       </nav>
 
-      {/* Onboarding Notice Banner */}
+      {/* Launch Notice Banner */}
       <div className="relative z-40 mx-auto max-w-5xl px-6 md:px-12">
-        <div className="flex items-center justify-center gap-3 rounded-2xl border border-blue-500/20 bg-blue-600/10 px-6 py-3.5 text-center backdrop-blur">
-          <AlertCircle className="h-5 w-5 flex-shrink-0 text-blue-400" />
-          <p className="text-sm text-blue-200">
-            Initially, we are onboarding only 10,000 creators in Pakistan. This is a temporary limit for Pakistan.
+        <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-blue-500/25 bg-blue-600/10 px-6 py-4 text-center backdrop-blur sm:flex-row sm:gap-3">
+          <div className="flex items-center gap-2.5">
+            <Calendar className="h-5 w-5 flex-shrink-0 text-blue-400" />
+            <p className="text-sm font-medium text-blue-200">
+              Crown Mega officially launches on 15 October 2026.
+            </p>
+          </div>
+          <div className="hidden h-4 w-px bg-blue-500/30 sm:block" />
+          <p className="text-sm font-medium text-white">
+            Pre-launch registrations and purchasing close on 30 September 2026.
           </p>
         </div>
       </div>
@@ -288,10 +343,13 @@ function App() {
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </a>
           <div className="flex flex-col items-center gap-1">
-            <button className="rounded-2xl border border-blue-500/20 bg-blue-600/10 px-8 py-4 font-semibold text-blue-200 backdrop-blur transition hover:bg-blue-600/20 hover:text-blue-100">
+            <button
+              onClick={() => setIsLearnMoreOpen(true)}
+              className="rounded-2xl border border-blue-500/20 bg-blue-600/10 px-8 py-4 font-semibold text-blue-200 backdrop-blur transition hover:bg-blue-600/20 hover:text-blue-100"
+            >
               Learn More
             </button>
-            <span className="text-xs text-gray-500">Coming soon</span>
+            <span className="text-xs text-gray-500">Pre-launch details</span>
           </div>
         </div>
 
@@ -438,6 +496,59 @@ function App() {
         </div>
       </section>
 
+      {/* Connected Platforms Section */}
+      <section id="platforms" className="relative z-10 px-6 py-16 md:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14 text-center">
+            <h2 className="text-3xl font-extrabold text-white md:text-4xl">
+              Social Platforms Connected to the Crown Network
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-gray-400">
+              Seamlessly expanding your reach across next-generation social, AI, live-streaming, and creator ecosystems.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {connectedPlatforms.map((platform, idx) => {
+              const Icon = platform.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`group relative flex flex-col items-center gap-3 rounded-2xl p-6 text-center transition-all duration-500 hover:scale-[1.04] ${
+                    platform.isHighlighted
+                      ? 'glass-blue border-2 border-blue-500/50 hover:shadow-2xl hover:shadow-blue-600/30 animate-pulse-glow-blue'
+                      : 'glass-blue hover:border-blue-500/40 hover:shadow-xl hover:shadow-blue-600/15'
+                  }`}
+                >
+                  {platform.isHighlighted && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <div className="flex items-center gap-1 rounded-full bg-shining-blue px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-600/40">
+                        <Sparkles className="h-3 w-3" />
+                        Coming Soon
+                      </div>
+                    </div>
+                  )}
+                  <div className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:scale-110 ${
+                    platform.isHighlighted
+                      ? 'bg-shining-blue shadow-lg shadow-blue-600/40'
+                      : 'bg-blue-600/15 shadow-lg shadow-blue-600/10'
+                  }`}>
+                    <Icon className={`h-7 w-7 ${platform.isHighlighted ? 'text-white' : 'text-blue-400'}`} />
+                  </div>
+                  <span className={`text-sm font-medium ${platform.isHighlighted ? 'text-white' : 'text-gray-300'}`}>
+                    {platform.name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="mt-10 text-center text-sm text-gray-500">
+            22 platforms currently live in the Crown Network, with Crown Mega launching soon.
+          </p>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="relative z-10 border-t border-blue-500/10 px-6 py-10 md:px-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
@@ -455,6 +566,9 @@ function App() {
           <p className="text-sm text-gray-600">© 2026 Crown Mega. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Learn More Modal */}
+      <LearnMoreModal isOpen={isLearnMoreOpen} onClose={() => setIsLearnMoreOpen(false)} />
     </div>
   );
 }
