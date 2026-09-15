@@ -35,6 +35,30 @@ import {
 } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
+const handleSafepayCheckout = (usdAmount: number) => {
+  const pkrAmount = usdAmount * 280;
+
+  if (window.Safepay) {
+    window.Safepay.Checkout.open({
+      env: 'production',
+      clientKey: 'sec_e88c4638-6c5c-4806-8531-26d6da39d779',
+      amount: pkrAmount,
+      currency: 'PKR',
+      tracker: 'order_' + Date.now(),
+      customerEmail: 'customer@crownmega.com',
+      onSuccess: (data: any) => {
+        alert('Payment Successful!');
+      },
+      onDismiss: () => {
+        console.log('Checkout closed');
+      }
+    });
+  } else {
+    alert('Safepay SDK load nahi hua. Page refresh karein.');
+  }
+};
+
+
 // ============================================================
 // PRICING DATA
 // ============================================================
