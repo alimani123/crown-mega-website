@@ -35,6 +35,68 @@ import {
 } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
+const USD_TO_PKR_RATE = 280;
+
+const openSafepayModal = (amountPKR: number) => {
+  window.Safepay!.Checkout.open({
+    env: 'production',
+    clientKey: 'sec_e88c4638-6c5c-4806-8531-26d6da39d779',
+    amount: amountPKR,
+    currency: 'PKR',
+    tracker: 'order_' + Date.now(),
+    customerEmail: 'customer@example.com',
+    onSuccess: (data) => {
+      console.log('Payment Successful:', data);
+      alert('Payment Successful!');
+    },
+    onDismiss: () => {
+      console.log('Payment Modal Dismissed');
+    },
+  });
+};
+
+const SAFEPAY_SCRIPT_SRC = 'https://getsafepay.com/components/v1/pay.js';
+
+const loadSafepayScript = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>(
+      `script[src="${SAFEPAY_SCRIPT_SRC}"]`,
+    );
+    if (existing) {
+      if (window.Safepay) {
+        resolve();
+      } else {
+        existing.addEventListener('load', () => resolve(), { once: true });
+        existing.addEventListener('error', () => reject(new Error('Failed to load Safepay SDK')), { once: true });
+      }
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = SAFEPAY_SCRIPT_SRC;
+    script.type = 'text/javascript';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load Safepay SDK'));
+    document.body.appendChild(script);
+  });
+};
+
+const handleSafepayCheckout = async (productAmountUSD: number) => {
+  const amountPKR = Math.round(productAmountUSD * USD_TO_PKR_RATE);
+  try {
+    if (!window.Safepay) {
+      await loadSafepayScript();
+    }
+    if (!window.Safepay) {
+      alert('Safepay SDK is loading. Please try again in a moment.');
+      return;
+    }
+    openSafepayModal(amountPKR);
+  } catch {
+    alert('Failed to load Safepay SDK. Please try again.');
+  }
+};
+
 // ============================================================
 // PRICING DATA
 // ============================================================
@@ -413,6 +475,7 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
 
       {/* CTA Button */}
       <button
+        onClick={() => handleSafepayCheckout(plan.price)}
         className={`w-full rounded-2xl py-4 font-bold transition-all duration-300 ${
           plan.isFeatured
             ? 'bg-gradient-to-r from-amber-400 to-yellow-600 text-black hover:from-amber-300 hover:to-yellow-500 hover:shadow-lg hover:shadow-amber-500/40'
