@@ -436,17 +436,23 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
       </ul>
 
       {/* CTA Button */}
-      <button
-        className={`w-full rounded-2xl py-4 font-bold transition-all duration-300 ${
-          plan.isFeatured
-            ? 'bg-gradient-to-r from-amber-400 to-yellow-600 text-black hover:from-amber-300 hover:to-yellow-500 hover:shadow-lg hover:shadow-amber-500/40'
-            : plan.name === 'Premium'
-              ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-400 hover:to-purple-500 hover:shadow-lg hover:shadow-purple-500/40'
-              : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-400 hover:to-blue-500 hover:shadow-lg hover:shadow-blue-500/40'
-        }`}
-      >
-        Pre-Order Buy
-      </button>
+         <button
+      onClick={() => handleSafepayCheckout(plan.price)}
+      className={`w-full rounded-2xl py-4 font-bold transition-all duration-300 ${
+        plan.isFeatured
+          ? 'bg-gradient-to-r from-amber-400 to-yellow-600 text-black hover:from-amber-300 hover:to-yellow-500 hover:shadow-lg hover:shadow-amber-500/40'
+          : plan.name === 'Premium'
+            ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-400 hover:to-purple-500 hover:shadow-lg hover:shadow-purple-500/40'
+            : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-400 hover:to-blue-500 hover:shadow-lg hover:shadow-blue-500/40'
+      }`}
+    >
+      Pre-Order Buy
+    </button>
+      
+      
+      
+      
+
     </div>
   );
 }
