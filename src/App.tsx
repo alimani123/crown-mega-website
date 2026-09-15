@@ -35,11 +35,12 @@ import {
 } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
-const handleSafepayCheckout = (usdAmount: number) => {
-  const pkrAmount = usdAmount * 280;
+const handleSafepayCheckout = (usdAmount: any) => {
+  const pkrAmount = Number(usdAmount) * 280;
 
-  if (window.Safepay) {
-    window.Safepay.Checkout.open({
+  const win = window as any;
+  if (win.Safepay) {
+    win.Safepay.Checkout.open({
       env: 'production',
       clientKey: 'sec_e88c4638-6c5c-4806-8531-26d6da39d779',
       amount: pkrAmount,
@@ -57,6 +58,7 @@ const handleSafepayCheckout = (usdAmount: number) => {
     alert('Safepay SDK load nahi hua. Page refresh karein.');
   }
 };
+
 
 
 // ============================================================
