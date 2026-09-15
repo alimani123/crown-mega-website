@@ -37,9 +37,9 @@ import LearnMoreModal from '@/components/LearnMoreModal';
 
 const handleSafepayCheckout = (usdAmount: any) => {
   const pkrAmount = Number(usdAmount) * 280;
-
   const win = window as any;
-  if (win.Safepay) {
+
+  const openCheckout = () => {
     win.Safepay.Checkout.open({
       env: 'production',
       clientKey: 'sec_e88c4638-6c5c-4806-8531-26d6da39d779',
@@ -54,9 +54,24 @@ const handleSafepayCheckout = (usdAmount: any) => {
         console.log('Checkout closed');
       }
     });
+  };
+
+  if (win.Safepay) {
+    openCheckout();
   } else {
-    alert('Safepay SDK load nahi hua. Page refresh karein.');
+    const script = document.createElement('script');
+    script.src = 'https://getsafepay.com/components/v1/pay.js';
+    script.async = true;
+    script.onload = () => {
+      openCheckout();
+    };
+    script.onerror = () => {
+      alert('Safepay SDK load nahi ho saka. Internet ya Ad-blocker check karein.');
+    };
+    document.body.appendChild(script);
   }
+};
+
 };
 
 
