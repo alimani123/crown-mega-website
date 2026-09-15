@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Check,
   Sparkles,
@@ -29,8 +29,11 @@ import {
   Smartphone,
   ShoppingBag,
   CloudLightning,
+  Zap,
+  TrendingUp,
+  ShieldCheck,
 } from 'lucide-react';
-import LearnMoreModal from './LearnMoreModal';
+import LearnMoreModal from '@/components/LearnMoreModal';
 
 // ============================================================
 // PRICING DATA
@@ -155,6 +158,167 @@ const postLaunchBenefits = [
   'Account prices very high',
   '50% salary & 50% salary drop',
 ];
+
+// ============================================================
+// TRUST FEATURES DATA
+// ============================================================
+
+interface TrustFeature {
+  icon: typeof Crown;
+  title: string;
+  description: string;
+}
+
+const trustFeatures: TrustFeature[] = [
+  {
+    icon: Zap,
+    title: 'Easy & Fast Monetization',
+    description:
+      'Get your content monetized quickly with simple approval workflows and hassle-free onboarding.',
+  },
+  {
+    icon: Clock,
+    title: 'Payout Within 2 Hours',
+    description:
+      'Enjoy lightning-fast earnings processing directly into your preferred account within 2 hours.',
+  },
+  {
+    icon: Brain,
+    title: 'AI Advanced Tools',
+    description:
+      'Leverage state-of-the-art AI generation and analytics tools to supercharge your content workflow.',
+  },
+  {
+    icon: Calendar,
+    title: 'Monthly Salaries',
+    description:
+      'Earn stable, recurring monthly payments and performance bonuses based on your consistent engagement.',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Top CPM Rates',
+    description:
+      'Maximize your revenue potential with industry-leading CPM rates tailored for creator monetization.',
+  },
+  {
+    icon: ShieldCheck,
+    title: '100% Transparency',
+    description:
+      'Track your views, analytics, and revenue real-time with zero hidden fees or hidden terms.',
+  },
+];
+
+// ============================================================
+// TRUST CAROUSEL COMPONENT
+// ============================================================
+
+const TRUST_AUTOPLAY_MS = 3500;
+
+function TrustCarousel() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const goTo = (idx: number, dir: number) => {
+    setDirection(dir);
+    setActiveIdx((idx + trustFeatures.length) % trustFeatures.length);
+  };
+
+  const next = (idx: number) => goTo(idx + 1, 1);
+  const goToSlide = (idx: number) => goTo(idx, idx > activeIdx ? 1 : -1);
+
+  useEffect(() => {
+    if (isPaused) return;
+    timerRef.current = setTimeout(() => next(activeIdx), TRUST_AUTOPLAY_MS);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [activeIdx, isPaused]);
+
+  const activeFeature = trustFeatures[activeIdx];
+  const ActiveIcon = activeFeature.icon;
+
+  return (
+    <div
+      className="flex flex-col items-center"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Carousel viewport */}
+      <div className="relative w-full max-w-2xl">
+        <div className="relative h-[360px] overflow-hidden md:h-[340px]">
+          {trustFeatures.map((feature, idx) => {
+            const Icon = feature.icon;
+            const isActive = idx === activeIdx;
+            const slideOutLeft = !isActive && direction === 1 && idx === (activeIdx - 1 + trustFeatures.length) % trustFeatures.length;
+            const slideOutRight = !isActive && direction === -1 && idx === (activeIdx + 1) % trustFeatures.length;
+            const slideInRight = !isActive && direction === 1 && idx === (activeIdx + 1) % trustFeatures.length;
+            const slideInLeft = !isActive && direction === -1 && idx === (activeIdx - 1 + trustFeatures.length) % trustFeatures.length;
+
+            let positionClass = '';
+            if (isActive) positionClass = 'translate-x-0 opacity-100 scale-100 z-20';
+            else if (slideOutLeft) positionClass = '-translate-x-full opacity-0 scale-95 z-10';
+            else if (slideOutRight) positionClass = 'translate-x-full opacity-0 scale-95 z-10';
+            else if (slideInRight) positionClass = 'translate-x-full opacity-0 scale-95 z-10';
+            else if (slideInLeft) positionClass = '-translate-x-full opacity-0 scale-95 z-10';
+            else positionClass = 'opacity-0 scale-95 pointer-events-none z-0';
+
+            return (
+              <div
+                key={idx}
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out ${positionClass}`}
+              >
+                <div className="group relative w-full overflow-hidden rounded-3xl border border-blue-500/40 bg-slate-900/80 p-10 text-center shadow-2xl shadow-blue-600/20 backdrop-blur-xl md:p-12">
+                  {/* Top glow line */}
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/70 to-transparent" />
+                  {/* Bottom glow line */}
+                  <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+
+                  {/* Icon */}
+                  <div className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-3xl bg-shining-blue shadow-xl shadow-blue-600/40 transition-transform duration-500 group-hover:scale-110">
+                    <Icon className="h-10 w-10 text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="mb-4 text-2xl font-extrabold text-white md:text-3xl">
+                    {feature.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="mx-auto max-w-lg text-base leading-relaxed text-gray-400">
+                    {feature.description}
+                  </p>
+
+                  {/* Card counter */}
+                  <span className="mt-7 inline-block rounded-full border border-blue-500/20 bg-blue-600/10 px-4 py-1.5 text-xs font-semibold text-blue-300">
+                    {idx + 1} / {trustFeatures.length}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Pagination dots */}
+      <div className="mt-8 flex items-center gap-3">
+        {trustFeatures.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => goToSlide(idx)}
+            aria-label={`Go to feature ${idx + 1}`}
+            className={`h-2.5 rounded-full transition-all duration-400 ${
+              idx === activeIdx
+                ? 'w-8 bg-shining-blue shadow-lg shadow-blue-600/50'
+                : 'w-2.5 bg-blue-500/25 hover:bg-blue-500/50'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ============================================================
 // CONNECTED PLATFORMS DATA
@@ -546,6 +710,32 @@ function App() {
           <p className="mt-10 text-center text-sm text-gray-500">
             22 platforms currently live in the Crown Network, with Crown Mega launching soon.
           </p>
+        </div>
+      </section>
+
+      {/* Trust Features Section */}
+      <section id="trust" className="relative z-10 overflow-hidden px-6 py-16 md:py-24">
+        {/* Glowing blue background accents */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/4 top-10 h-80 w-80 -translate-x-1/2 rounded-full bg-blue-600/15 blur-[100px]" />
+          <div className="absolute right-1/4 bottom-10 h-80 w-80 translate-x-1/2 rounded-full bg-blue-800/15 blur-[100px]" />
+          <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-700/10 blur-[140px]" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl">
+          {/* Header */}
+          <div className="mb-14 text-center">
+            <h2 className="text-3xl font-extrabold text-white md:text-4xl">
+              Crown Mega is the Name of Trust
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-400">
+              Empower your content creation journey with instant payouts, industry-leading CPM rates,
+              and cutting-edge AI tools built for creator growth.
+            </p>
+          </div>
+
+          {/* Auto-play Carousel */}
+          <TrustCarousel />
         </div>
       </section>
 
