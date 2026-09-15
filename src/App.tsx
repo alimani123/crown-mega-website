@@ -35,43 +35,19 @@ import {
 } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
+
 const handleSafepayCheckout = (usdAmount: any) => {
   const pkrAmount = Number(usdAmount) * 280;
-  const win = window as any;
-
-  const openCheckout = () => {
-    win.Safepay.Checkout.open({
-      env: 'production',
-      clientKey: 'sec_e88c4638-6c5c-4806-8531-26d6da39d779',
-      amount: pkrAmount,
-      currency: 'PKR',
-      tracker: 'order_' + Date.now(),
-      customerEmail: 'customer@crownmega.com',
-      onSuccess: (data: any) => {
-        alert('Payment Successful!');
-      },
-      onDismiss: () => {
-        console.log('Checkout closed');
-      }
-    });
-  };
-
-  if (win.Safepay) {
-    openCheckout();
-  } else {
-    const script = document.createElement('script');
-    script.src = 'https://getsafepay.com/components/v1/pay.js';
-    script.async = true;
-    script.onload = () => {
-      openCheckout();
-    };
-    script.onerror = () => {
-      alert('Safepay SDK load nahi ho saka. Internet ya Ad-blocker check karein.');
-    };
-    document.body.appendChild(script);
-  }
+  
+  // Yahan apni 'pub_' se shuru hone wali Public Key lagayein (Secret 'sec_' key yahan nahi chalegi)
+  const publicKey = 'pub_e88c4638-6c5c-4806-8531-26d6da39d779'; 
+  
+  // Safe & Reliable Redirect Link URL to avoid popup/ad-blocker blocks
+  const checkoutUrl = `https://checkout.getsafepay.com/components?env=production&key=${publicKey}&amount=${pkrAmount}&currency=PKR&tracker=order_${Date.now()}`;
+  
+  // Direct user to secure Safepay checkout page
+  window.location.href = checkoutUrl;
 };
-
 
 
 // ============================================================
