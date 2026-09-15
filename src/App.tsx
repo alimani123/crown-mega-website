@@ -38,32 +38,14 @@ import LearnMoreModal from '@/components/LearnMoreModal';
 
 const handleSafepayCheckout = (usdAmount: any) => {
   const pkrAmount = Number(usdAmount) * 280;
-  const win = window as any;
-
-  // Check if Safepay SDK is loaded
-  if (win.Safepay && win.Safepay.Checkout) {
-    try {
-      const checkout = new win.Safepay.Checkout({
-        environment: 'production',
-        key: 'pub_e88c4638-6c5c-4806-8531-26d6da39d779',
-        amount: pkrAmount,
-        currency: 'PKR',
-        tracker: 'order_' + Date.now()
-      });
-      
-      // Open Safepay Embedded/Popup Checkout directly
-      checkout.render({
-        paymentMethod: 'card'
-      });
-    } catch (e) {
-      console.error(e);
-      alert("Payment gateway load hone mein masla hai. Dobara koshish karein.");
-    }
-  } else {
-    // Agar SDK load nahi hua toh user ko alert dikhayein taake page crash na ho
-    alert("Safepay SDK load ho raha hai, bara-e-karam aik baar phir click karein.");
-  }
+  
+  // Safepay ka official secure Hosted Checkout Link format
+  const checkoutUrl = `https://getsafepay.com/components?env=production&key=pub_e88c4638-6c5c-4806-8531-26d6da39d779&amount=${pkrAmount}&currency=PKR`;
+  
+  // Naye tab mein payment page khol dein taake website kharab na ho
+  window.open(checkoutUrl, '_blank');
 };
+
 
 
 // ============================================================
