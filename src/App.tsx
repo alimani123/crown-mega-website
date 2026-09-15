@@ -38,15 +38,30 @@ import LearnMoreModal from '@/components/LearnMoreModal';
 
 const handleSafepayCheckout = (usdAmount: any) => {
   const pkrAmount = Number(usdAmount) * 280;
-  
-  // Yahan apni 'pub_' se shuru hone wali Public Key lagayein (Secret 'sec_' key yahan nahi chalegi)
-  const publicKey = 'pub_e88c4638-6c5c-4806-8531-26d6da39d779'; 
-  
-  // Safe & Reliable Redirect Link URL to avoid popup/ad-blocker blocks
-  const checkoutUrl = `https://checkout.getsafepay.com/components?env=production&key=${publicKey}&amount=${pkrAmount}&currency=PKR&tracker=order_${Date.now()}`;
-  
-  // Direct user to secure Safepay checkout page
-  window.location.href = checkoutUrl;
+  const win = window as any;
+
+  // Check if Safepay SDK is already loaded globally
+  if (win.Safepay && win.Safepay.Checkout) {
+    try {
+      const checkout = new win.Safepay.Checkout({
+        environment: 'production',
+        key: 'pub_e88c4638-6c5c-4806-8531-26d6da39d779', // Aapki Public Key
+        amount: pkrAmount,
+        currency: 'PKR',
+        tracker: 'order_' + Date.now()
+      });
+      checkout.render({
+        target: '#payment-container', // Ya direct open karein
+        paymentMethod: 'card'
+      });
+    } catch (e) {
+      // Fallback to direct redirect link if render fails
+      window.location.href = `https://checkout.getsafepay.com/components?env=production&key=pub_e88c4638-6c5c-4806-8531-26d6da39d779&amount=${pkrAmount}&currency=PKR`;
+    }
+  } else {
+    // Agar script load nahi hui toh direct redirect kar dein taake customer ka waqt zaya na ho
+    window.location.href = `https://checkout.getsafepay.com/components?env=production&key=pub_e88c4638-6c5c-4806-8531-26d6da39d779&amount=${pkrAmount}&currency=PKR`;
+  }
 };
 
 
