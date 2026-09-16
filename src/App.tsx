@@ -36,19 +36,12 @@ import {
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 
-      const handleSafepayCheckout = (planName: string) => {
-    let checkoutUrl = 'https://sandbox.getsafpay.com';
-    
-    if (planName.toLowerCase().includes('standard')) {
-      checkoutUrl = 'https://sandbox.api.getsafpay.com/io/quick-link?q=link_64f2a678-3cb5-4d4d-a52-816190c67f18';
-    } else if (planName.toLowerCase().includes('premium')) {
-      checkoutUrl = 'https://sandbox.api.getsafpay.com/io/quick-link?q=link_56fab345-82b3-4bd5-8c8a-47a44c025577';
-    } else if (planName.toLowerCase().includes('vip')) {
-      checkoutUrl = 'https://sandbox.api.getsafpay.com/io/quick-link?q=link_da2ab27b-e3a6-43e6-8751-27b1c2c25fdc';
-    }
-
+        const handleSafepayCheckout = (planName: string) => {
+    // Safepay ka official sandbox checkout link
+    const checkoutUrl = 'https://sandbox.getsafpay.com/components';
     window.open(checkoutUrl, '_blank');
   };
+
 
 
 
