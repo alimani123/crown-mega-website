@@ -36,30 +36,22 @@ import {
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 
-const handleSafepayCheckout = (usdAmount: any) => {
-  const pkrAmount = Number(usdAmount) * 280;
-  
-  try {
-    // Check karein ke Safepay load hai ya nahi
-    if (!(window as any).Safepay) {
-      alert("Safepay script load ho rahi hai, baraye meherbani aik baar page refresh karein.");
-      return;
-    }
+const handleSafepayCheckout = (planName: string) => {
+  let paymentUrl = '';
 
-    // Safepay Checkout Instance (Sandbox Mode)
-    const checkout = new (window as any).Safepay.Checkout({
-      env: 'sandbox',
-      key: "sec_96156236-3b2d-4bbe-b6b3-cc50c3665c8f", // Aapki sandbox key
-      amount: pkrAmount * 100, // Safepay amount ko paisay (cents) mein leta hai, isliye * 100 kiya hai
-      currency: "PKR"
-    });
-
-    // Checkout window ko screen par render/open karein
-    checkout.render();
-
-  } catch (error) {
-    console.error("Safepay error:", error);
+  // Plan ke naam ke mutabiq sahi link select hoga
+  if (planName.toLowerCase().includes('standard')) {
+    paymentUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_84f2a878-3cb5-4d4d-a452-8161f0c67f18';
+  } else if (planName.toLowerCase().includes('premium')) {
+    paymentUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_56fab345-82b3-4bd5-8c8a-47a44c025577';
+  } else if (planName.toLowerCase().includes('vip')) {
+    paymentUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_da2ab27b-e3e6-4d3e-8751-27b1c2c25fdc';
+  } else {
+    paymentUrl = 'https://sandbox.getsafepay.com';
   }
+
+  // Naye tab mein secure checkout page kholne ke liye
+  window.open(paymentUrl, '_blank');
 };
 
 
