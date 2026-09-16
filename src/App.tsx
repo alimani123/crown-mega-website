@@ -436,7 +436,8 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
 
       {/* CTA Button */}
          <button
-      onClick={() => handleSafepayCheckout(plan.price)}
+      onClick={() => handleSafepayCheckout(plan.name)}
+           
       className={`w-full rounded-2xl py-4 font-bold transition-all duration-300 ${
         plan.isFeatured
           ? 'bg-gradient-to-r from-amber-400 to-yellow-600 text-black hover:from-amber-300 hover:to-yellow-500 hover:shadow-lg hover:shadow-amber-500/40'
