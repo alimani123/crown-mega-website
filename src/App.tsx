@@ -36,19 +36,18 @@ import {
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 
-    const handleSafepayCheckout = (planName: string) => {
-    let amount = 5;
+      const handleSafepayCheckout = (planName: string) => {
+    let checkoutUrl = 'https://sandbox.getsafpay.com';
+    
     if (planName.toLowerCase().includes('standard')) {
-      amount = 5;
+      checkoutUrl = 'https://sandbox.api.getsafpay.com/io/quick-link?q=link_64f2a678-3cb5-4d4d-a52-816190c67f18';
     } else if (planName.toLowerCase().includes('premium')) {
-      amount = 10;
+      checkoutUrl = 'https://sandbox.api.getsafpay.com/io/quick-link?q=link_56fab345-82b3-4bd5-8c8a-47a44c025577';
     } else if (planName.toLowerCase().includes('vip')) {
-      amount = 200;
+      checkoutUrl = 'https://sandbox.api.getsafpay.com/io/quick-link?q=link_da2ab27b-e3a6-43e6-8751-27b1c2c25fdc';
     }
 
-    // Seedha Cloudflare Worker ka link khol dein amount ke sath
-    const workerUrl = `https://mute-disk-68dc.zam58758.workers.dev?amount=${amount}&plan=${encodeURIComponent(planName)}`;
-    window.open(workerUrl, '_blank');
+    window.open(checkoutUrl, '_blank');
   };
 
 
