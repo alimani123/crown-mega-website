@@ -36,11 +36,12 @@ import {
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 
-        const handleSafepayCheckout = (planName: string) => {
+    const handleSafepayCheckout = (planName: string) => {
     // Safepay ka official sandbox checkout link
     const checkoutUrl = 'https://sandbox.getsafpay.com/components';
     window.open(checkoutUrl, '_blank');
   };
+
 
 
 
