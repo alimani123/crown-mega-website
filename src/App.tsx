@@ -39,11 +39,29 @@ import LearnMoreModal from '@/components/LearnMoreModal';
 const handleSafepayCheckout = (usdAmount: any) => {
   const pkrAmount = Number(usdAmount) * 280;
   
-  // Sahi URL format (Domain getsafepay.com hi rahega, env sandbox hoga)
-  const checkoutUrl = `https://getsafepay.com/components?env=sandbox&key=sec_96156236-3b2d-4bbe-b6b3-cc50c3665c8f&amount=${pkrAmount}&currency=PKR`;
-  
-  window.open(checkoutUrl, '_blank');
+  try {
+    // Check karein ke Safepay load hai ya nahi
+    if (!(window as any).Safepay) {
+      alert("Safepay script load ho rahi hai, baraye meherbani aik baar page refresh karein.");
+      return;
+    }
+
+    // Safepay Checkout Instance (Sandbox Mode)
+    const checkout = new (window as any).Safepay.Checkout({
+      env: 'sandbox',
+      key: "sec_96156236-3b2d-4bbe-b6b3-cc50c3665c8f", // Aapki sandbox key
+      amount: pkrAmount * 100, // Safepay amount ko paisay (cents) mein leta hai, isliye * 100 kiya hai
+      currency: "PKR"
+    });
+
+    // Checkout window ko screen par render/open karein
+    checkout.render();
+
+  } catch (error) {
+    console.error("Safepay error:", error);
+  }
 };
+
 
 
 
