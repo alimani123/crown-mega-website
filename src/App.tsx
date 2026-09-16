@@ -36,32 +36,45 @@ import {
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 
-const handleSafepayCheckout = (planName: string) => {
-  let baseUrl = '';
-  let priceAmount = 0;
+  const handleSafepayCheckout = async (planName: string) => {
+    let priceAmount = 5;
+    if (planName.toLowerCase().includes('standard')) {
+      priceAmount = 5;
+    } else if (planName.toLowerCase().includes('premium')) {
+      priceAmount = 10;
+    } else if (planName.toLowerCase().includes('vip')) {
+      priceAmount = 200;
+    }
 
-  // Plan ke naam ke mutabiq sahi link aur amount select hoga
-  if (planName.toLowerCase().includes('standard')) {
-    baseUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_84f2a878-3cb5-4d4d-a452-8161f0c67f18';
-    priceAmount = 5;
-  } else if (planName.toLowerCase().includes('premium')) {
-    baseUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_56fab345-82b3-4bd5-8c8a-47a44c025577';
-    priceAmount = 10;
-  } else if (planName.toLowerCase().includes('vip')) {
-    baseUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_da2ab27b-e3e6-4d3e-8751-27b1c2c25fdc';
-    priceAmount = 200;
-  } else {
-    baseUrl = 'https://sandbox.getsafepay.com';
-  }
+    try {
+      // Cloudflare Worker ko request bhej rahe hain
+      const response = await fetch('https://mute-disk-68dc.zam58758.workers.dev', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planName: planName,
+          amount: priceAmount,
+          currency: 'PKR'
+        }),
+      });
 
-  // Har user ke liye aik unique tracking reference banana taake naya session khule
-  const uniqueTracker = `cm_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-  const finalPaymentUrl = `${baseUrl}&tracker=${uniqueTracker}&amount=${priceAmount}`;
+      const data = await response.json();
 
-  // Naye tab mein secure checkout page kholne ke liye
-  window.open(finalPaymentUrl, '_blank');
-};
-
+      // Safepay checkout page open karna
+      if (data.url) {
+        window.open(data.url, '_blank');
+      } else if (data.token) {
+        window.open(`https://sandbox.getsafepay.com/components?beacon=${data.token}`, '_blank');
+      } else {
+        alert('Payment session create nahi ho saka.');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Connection error a gaya hai.');
+    }
+  };
 
 
 
