@@ -36,45 +36,21 @@ import {
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 
-  const handleSafepayCheckout = async (planName: string) => {
-    let priceAmount = 5;
+    const handleSafepayCheckout = (planName: string) => {
+    let amount = 5;
     if (planName.toLowerCase().includes('standard')) {
-      priceAmount = 5;
+      amount = 5;
     } else if (planName.toLowerCase().includes('premium')) {
-      priceAmount = 10;
+      amount = 10;
     } else if (planName.toLowerCase().includes('vip')) {
-      priceAmount = 200;
+      amount = 200;
     }
 
-    try {
-      // Cloudflare Worker ko request bhej rahe hain
-      const response = await fetch('https://mute-disk-68dc.zam58758.workers.dev', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          planName: planName,
-          amount: priceAmount,
-          currency: 'PKR'
-        }),
-      });
-
-      const data = await response.json();
-
-      // Safepay checkout page open karna
-      if (data.url) {
-        window.open(data.url, '_blank');
-      } else if (data.token) {
-        window.open(`https://sandbox.getsafepay.com/components?beacon=${data.token}`, '_blank');
-      } else {
-        alert('Payment session create nahi ho saka.');
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      alert('Connection error a gaya hai.');
-    }
+    // Seedha Cloudflare Worker ka link khol dein amount ke sath
+    const workerUrl = `https://mute-disk-68dc.zam58758.workers.dev?amount=${amount}&plan=${encodeURIComponent(planName)}`;
+    window.open(workerUrl, '_blank');
   };
+
 
 
 
