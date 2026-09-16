@@ -37,21 +37,29 @@ import LearnMoreModal from '@/components/LearnMoreModal';
 
 
 const handleSafepayCheckout = (planName: string) => {
-  let paymentUrl = '';
+  let baseUrl = '';
+  let priceAmount = 0;
 
-  // Plan ke naam ke mutabiq sahi link select hoga
+  // Plan ke naam ke mutabiq sahi link aur amount select hoga
   if (planName.toLowerCase().includes('standard')) {
-    paymentUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_84f2a878-3cb5-4d4d-a452-8161f0c67f18';
+    baseUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_84f2a878-3cb5-4d4d-a452-8161f0c67f18';
+    priceAmount = 5;
   } else if (planName.toLowerCase().includes('premium')) {
-    paymentUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_56fab345-82b3-4bd5-8c8a-47a44c025577';
+    baseUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_56fab345-82b3-4bd5-8c8a-47a44c025577';
+    priceAmount = 10;
   } else if (planName.toLowerCase().includes('vip')) {
-    paymentUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_da2ab27b-e3e6-4d3e-8751-27b1c2c25fdc';
+    baseUrl = 'https://sandbox.api.getsafepay.com/io/quick-link?ql=link_da2ab27b-e3e6-4d3e-8751-27b1c2c25fdc';
+    priceAmount = 200;
   } else {
-    paymentUrl = 'https://sandbox.getsafepay.com';
+    baseUrl = 'https://sandbox.getsafepay.com';
   }
 
+  // Har user ke liye aik unique tracking reference banana taake naya session khule
+  const uniqueTracker = `cm_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+  const finalPaymentUrl = `${baseUrl}&tracker=${uniqueTracker}&amount=${priceAmount}`;
+
   // Naye tab mein secure checkout page kholne ke liye
-  window.open(paymentUrl, '_blank');
+  window.open(finalPaymentUrl, '_blank');
 };
 
 
