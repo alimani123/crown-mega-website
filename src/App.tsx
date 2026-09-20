@@ -36,11 +36,14 @@ import {
 import LearnMoreModal from '@/components/LearnMoreModal';
 
 
-    const handleSafepayCheckout = (planName: string) => {
-    // Safepay ka official sandbox checkout link
-    const checkoutUrl = 'https://sandbox.getsafpay.com/components';
-    window.open(checkoutUrl, '_blank');
-  };
+    <a
+  href="https://tally.so/r/zxkqyZ"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center justify-center bg-indigo-600 text-white font-medium px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors"
+>
+  Buy Now
+</a>
 
 
 
