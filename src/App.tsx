@@ -35,7 +35,7 @@ import {
 } from 'lucide-react';
 import LearnMoreModal from '@/components/LearnMoreModal';
 
-  
+  <a
   href="https://tally.so/r/zxkqyZ"
   target="_blank"
   rel="noopener noreferrer"
