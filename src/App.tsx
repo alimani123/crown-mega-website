@@ -438,8 +438,11 @@ function PricingCard({ plan }: { plan: PricingPlan }) {
   }`}
 >
   Pre-Order Buy
-</button>
-      
+    </button>
+</div>
+);
+}
+
       
 
 // ============================================================
